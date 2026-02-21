@@ -11,11 +11,13 @@
     "@eslint/js": "^10.0.1",
     "eslint": "^10.0.0",
     "globals": "^17.3.0",
+    "nodemon": "^3.1.10",
     "typescript-eslint": "^8.56.0"
   },
   "scripts": {
-    "build": "npm install && ags bundle app.ts ./builds/app -d \"DATADIR='/home/pascal/.config/ags'\"",
+    "build": "ags bundle app.ts ./builds/app -d \"DATADIR='/home/pascal/.config/ags'\"",
     "precopy": "npm run build",
-    "copy": "mkdir -p ~/.config/ags && cp -r ./builds/app ./images ~/.config/ags/"
+    "copy": "mkdir -p ~/.config/ags && cp -r ./builds/app ./images ~/.config/ags/",
+    "dev": "nodemon --watch app.ts --watch widget --watch style.scss --watch awk --ext ts,tsx,scss,awk --exec \"npm run copy && ~/.config/ags/app\""
   }
 }
