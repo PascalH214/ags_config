@@ -9,7 +9,7 @@ export interface IconProps extends Omit<JSX.IntrinsicElements["image"], "file"> 
 }
 
 export default function Icon({
-  imageParentFolder = "./images",
+  imageParentFolder = `${SRC}/images`,
   imageSubFolder,
   imageName,
   fileEnding = ".svg",
