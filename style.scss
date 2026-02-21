@@ -7,6 +7,7 @@ $overlay-color-0: rgb(108, 112, 134);
 $flamingo-color: rgb(242, 205, 205);
 $pink-color: rgb(245, 194, 231);
 $mauve-color: rgb(203, 166, 247);
+$red-color: rgb(243, 139, 168);
 $lavender-color: rgb(180, 190, 254);
 
 $button-width: 48px;
@@ -63,6 +64,13 @@ window.Bar {
       .uptime {
         color: $mauve-color;
       }
+    }
+
+    .shutdown-button {
+      background-color: $red-color;
+      padding: 4px;
+
+      border-radius: 8px;
     }
   }
 

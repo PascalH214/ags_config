@@ -1,41 +1,50 @@
-import { Gtk } from "ags/gtk4"
+import { Gtk } from "ags/gtk4";
 import { createPoll } from "ags/time";
-import { createState, createEffect, type Accessor } from "gnim"
+import { createComputed } from "gnim"
 
 import LabelWithIcon from "./LabelWithIcon";
 import DividingLine from "./DividingLine";
+import Icon from "./Icon";
 
 export default function InfoCenter(props: Partial<Gtk.Box.ConstructorProps> = {}) {
   const uptimeState = createPoll("", 20000, `bash -c "uptime | awk '{print $3}' | cut -d, -f1"`);
   const dateState = createPoll("", 1000, () => new Date().toISOString());
-  
-  const [uptime, setUptime] = createState("");
-  const [time, setTime] = createState("");
-  const [date, setDate] = createState("");
 
-  createEffect(() => {
+  const time = createComputed(() => {
     const dateObj = new Date(dateState())
-    const day = dateObj.getDate().toString().padStart(2, "0")
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0")
+
+    if (Number.isNaN(dateObj.getTime())) {
+      return ""
+    }
+
     const hours = dateObj.getHours().toString().padStart(2, "0")
     const minutes = dateObj.getMinutes().toString().padStart(2, "0")
     const seconds = dateObj.getSeconds().toString().padStart(2, "0")
 
-    setTime(`${hours}:${minutes}:${seconds}`);
-    setDate(`${day}.${month}`);
+    return `${hours}:${minutes}:${seconds}`
   });
 
-  createEffect(() => {
-    const uptimeSplit = uptimeState().split(":")
+  const date = createComputed(() => {
+    const dateObj = new Date(dateState())
 
-    if (uptimeSplit.length == 1) {
-        uptimeSplit[1] = "00"
+    if (Number.isNaN(dateObj.getTime())) {
+      return ""
     }
 
-    const hours = uptimeSplit[0].padStart(2, "0")
-    const minutes = uptimeSplit[1].padStart(2, "0")
+    const day = dateObj.getDate().toString().padStart(2, "0")
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0")
 
-    setUptime(`${hours}:${minutes}`);
+    return `${day}.${month}`
+  });
+
+  const uptime = createComputed(() => {
+    const uptimeSplit = uptimeState().split(":")
+    const hasHours = uptimeSplit.length > 1
+
+    const hours = (hasHours ? uptimeSplit[0] : "00").padStart(2, "0")
+    const minutes = (hasHours ? uptimeSplit[1] : uptimeSplit[0]).padStart(2, "0")
+
+    return `${hours}:${minutes}`
   });
 
   return (
@@ -51,6 +60,9 @@ export default function InfoCenter(props: Partial<Gtk.Box.ConstructorProps> = {}
         <LabelWithIcon className="date" imageName="calendar" label={date} />
         <DividingLine />
         <LabelWithIcon className="uptime" imageName="stopwatch" label={uptime} />
+        <button class="shutdown-button" >
+          <Icon imageName="shutdown" />
+        </button>
       </box>
     </box>
   )
