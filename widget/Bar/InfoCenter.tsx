@@ -2,9 +2,10 @@ import { Gtk } from "ags/gtk4";
 import { createPoll } from "ags/time";
 import { createComputed, Accessor, Setter } from "gnim"
 
-import Icon from "./Icon";
-import LabelWithIcon from "./LabelWithIcon";
-import DividingLine from "./DividingLine";
+import Icon from "../common/Icon";
+import LabelWithIcon from "../common/LabelWithIcon";
+import DividingLine from "../common/DividingLine";
+import ShutdownButton from "./ShutdownButton";
 
 interface InfoCenterProps extends Partial<Gtk.Box.ConstructorProps> {
   powerMenuOpen: Accessor<boolean>;
@@ -66,12 +67,11 @@ export default function InfoCenter(props: InfoCenterProps) {
         <LabelWithIcon className="date" imageName="calendar" label={date} />
         <DividingLine />
         <LabelWithIcon className="uptime" imageName="stopwatch" label={uptime} />
+        <ShutdownButton onClicked={() => {
+            setPowerMenuOpen(!powerMenuOpen());
+          }}
+        />
       </box>
-      <button class="shutdown-button" onClicked={() => {
-        setPowerMenuOpen(!powerMenuOpen());
-      }}>
-        <Icon imageName="shutdown" />
-      </button>
     </box>
   )
 }

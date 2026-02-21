@@ -13,6 +13,7 @@ export default function Icon({
   imageSubFolder,
   imageName,
   fileEnding = ".svg",
+  class: incomingClass,
   ...props
 }: IconProps) {
   const filePrefix = `${imageParentFolder}${imageSubFolder == undefined ? "/" : `/${imageSubFolder}/`}`
@@ -20,10 +21,12 @@ export default function Icon({
     typeof imageName === "function"
       ? imageName((name) => `${filePrefix}${name}${fileEnding}`)
       : `${filePrefix}${imageName}${fileEnding}`
+  const mergedClass = incomingClass == undefined ? "image" : `image ${incomingClass}`
 
   return (
     <Gtk.Image
-      file={file} 
+      file={file}
+      class={mergedClass}
       {...props}
     />
   )

@@ -1,5 +1,5 @@
 import type { Accessor } from "gnim"
-import Icon from "./Icon"
+import Icon from "../common/Icon"
 
 interface StateIconProps extends Omit<JSX.IntrinsicElements["image"], "file"> {
   states?: string[],
@@ -18,8 +18,8 @@ export default function StateIcon({
 }: StateIconProps) {
   const imageName =
     typeof state === "function"
-      ? state((value) => `${imageGroup}-${states[value]}`)
-      : `${imageGroup}-${states[state]}`
+      ? state((value) => `${states[value]}`)
+      : `${states[state]}`
 
   return (
     <Icon

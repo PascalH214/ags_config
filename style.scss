@@ -1,7 +1,10 @@
 // https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
 
 $base-color: rgb(30, 30, 46);
+
+$surface-color-1: rgb(69, 71, 90);
 $surface-color-0: rgb(49, 50, 68);
+
 $overlay-color-0: rgb(108, 112, 134);
 
 $flamingo-color: rgb(242, 205, 205);
@@ -98,9 +101,33 @@ window.Bar {
 }
 
 window.PowerMenu {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
 
   .dialog {
-    background-color: green;
+    padding: 32px;
+
+    border-radius: 32px;
+
+    .power-menu-button {
+      margin: 0px 8px;
+
+      &:first-child {
+        margin-left: 0px;
+      }
+
+      &:last-child {
+        margin-right: 0px;
+      }
+
+      image {
+        border-radius: 16px;
+
+        background-color: $surface-color-0;
+      }
+
+      &.focus image {
+        background-color: $lavender-color;
+      }
+    }
   }
 }

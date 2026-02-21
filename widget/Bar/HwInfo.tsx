@@ -2,9 +2,9 @@ import { Gtk } from "ags/gtk4"
 import { createPoll } from "ags/time"
 import { createComputed } from "gnim"
 
-import LabelWithStateIcon from "./LabelWithStateIcon"
+import LabelWithStateIcon from "../common/LabelWithStateIcon"
 import KeyboardLayout from "./KeyboardLayout"
-import DividingLine from "./DividingLine"
+import DividingLine from "../common/DividingLine"
 
 const cpuCmd = `env -u BASH_ENV bash --noprofile --norc -c '
 read cpu u n s i iw ir sir st g gn < /proc/stat

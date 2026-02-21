@@ -3,7 +3,7 @@ import { createState } from "gnim"
 import Hyprland from "gi://AstalHyprland"
 import Gio from "gi://Gio"
 
-import LabelWithIcon from "./LabelWithIcon"
+import LabelWithIcon from "../common/LabelWithIcon"
 
 const keyboardLayoutCmd = `
   hyprctl devices | 
