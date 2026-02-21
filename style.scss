@@ -1,0 +1,81 @@
+// https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
+
+$base-color: rgb(30, 30, 46);
+$surface-color-0: rgb(49, 50, 68);
+$overlay-color-0: rgb(108, 112, 134);
+
+$flamingo-color: rgb(242, 205, 205);
+$pink-color: rgb(245, 194, 231);
+$mauve-color: rgb(203, 166, 247);
+$lavender-color: rgb(180, 190, 254);
+
+$button-width: 48px;
+$button-height: 16px;
+
+window.Bar {
+  background: transparent;
+
+  padding: 8px 24px 0px 24px;
+
+  font-weight: bold;
+
+  .hw-info, .workspaces, .info-center {
+    background-color: $base-color;
+
+    padding: 6px 12px;
+    border-radius: 8px;
+
+    font-size: larger;
+    color: $lavender-color;
+  }
+
+  .workspaces {
+    button {
+      min-width: $button-width;
+      min-height: $button-height;
+
+      margin: 0 2px 0 2px;
+      padding: 0px;
+
+      background-color: $base-color;
+
+      border-radius: $button-height;
+
+      &:hover {
+        background-color: $overlay-color-0;
+      }
+
+      &.focused {
+        background-color: $surface-color-0;
+      }
+    }
+  }
+
+  .info-center {
+    .time-info {
+      .time {
+        color: $flamingo-color;
+      }
+      .date {
+
+        color: $pink-color;
+      }
+      .uptime {
+        color: $mauve-color;
+      }
+    }
+  }
+
+  .dividing-line {
+    background-color: $surface-color-0;
+    min-width: 2px;
+  }
+
+  .icon-label {
+    margin: 0px 12px;
+
+    image {
+      margin-right: 8px;
+    }
+  }
+}
