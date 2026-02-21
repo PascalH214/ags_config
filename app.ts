@@ -1,10 +1,16 @@
 import app from "ags/gtk4/app"
+import { createState } from "gnim"
+
 import style from "./style.scss"
 import Bar from "./widget/Bar"
+import PowerMenu from "./widget/PowerMenu"
+
+const [powerMenuOpen, setPowerMenuOpen] = createState(false);
 
 app.start({
   css: style,
   main() {
-    app.get_monitors().map(Bar)
+    app.get_monitors().map(monitor => Bar(monitor, powerMenuOpen, setPowerMenuOpen))
+    app.get_monitors().map(monitor => PowerMenu(monitor, powerMenuOpen, setPowerMenuOpen))
   },
 })

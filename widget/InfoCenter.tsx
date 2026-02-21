@@ -1,12 +1,18 @@
 import { Gtk } from "ags/gtk4";
 import { createPoll } from "ags/time";
-import { createComputed } from "gnim"
+import { createComputed, Accessor, Setter } from "gnim"
 
+import Icon from "./Icon";
 import LabelWithIcon from "./LabelWithIcon";
 import DividingLine from "./DividingLine";
-import Icon from "./Icon";
 
-export default function InfoCenter(props: Partial<Gtk.Box.ConstructorProps> = {}) {
+interface InfoCenterProps extends Partial<Gtk.Box.ConstructorProps> {
+  powerMenuOpen: Accessor<boolean>;
+  setPowerMenuOpen: Setter<boolean>;
+}
+
+export default function InfoCenter(props: InfoCenterProps) {
+  const { powerMenuOpen, setPowerMenuOpen, ...boxProps } = props
   const uptimeState = createPoll("", 20000, `bash -c "uptime | awk '{print $3}' | cut -d, -f1"`);
   const dateState = createPoll("", 1000, () => new Date().toISOString());
 
@@ -52,7 +58,7 @@ export default function InfoCenter(props: Partial<Gtk.Box.ConstructorProps> = {}
       name="info-center"
       class="info-center"
       $type="end"
-      {...props}
+      {...boxProps}
     >
       <box class="time-info">
         <LabelWithIcon className="time" imageName="clock" label={time} />
@@ -60,10 +66,12 @@ export default function InfoCenter(props: Partial<Gtk.Box.ConstructorProps> = {}
         <LabelWithIcon className="date" imageName="calendar" label={date} />
         <DividingLine />
         <LabelWithIcon className="uptime" imageName="stopwatch" label={uptime} />
-        <button class="shutdown-button" >
-          <Icon imageName="shutdown" />
-        </button>
       </box>
+      <button class="shutdown-button" onClicked={() => {
+        setPowerMenuOpen(!powerMenuOpen());
+      }}>
+        <Icon imageName="shutdown" />
+      </button>
     </box>
   )
 }

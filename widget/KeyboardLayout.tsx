@@ -37,10 +37,10 @@ export default function KeyboardLayout(props: Partial<Gtk.Box.ConstructorProps> 
 
   getKeyboardLayout()
     .then((layout) => setKeyboardLayout(layout))
-    .catch((err) => console.error(err))
+    .catch((err) => {})
 
   hyprland.connect("keyboard-layout", () => {
-    getKeyboardLayout().then(layout => setKeyboardLayout(layout)).catch(err => console.error(err))
+    getKeyboardLayout().then(layout => setKeyboardLayout(layout)).catch(err => {})
   })
 
   return (
