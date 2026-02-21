@@ -2,8 +2,8 @@ import app from "ags/gtk4/app"
 import { createState } from "gnim"
 
 import style from "./style.scss"
-import Bar from "./widget/Bar"
-import PowerMenu from "./widget/PowerMenu"
+import Bar from "./widget/Bar/Bar"
+import PowerMenu from "./widget/PowerMenu/PowerMenu"
 
 const [powerMenuOpen, setPowerMenuOpen] = createState(false);
 
