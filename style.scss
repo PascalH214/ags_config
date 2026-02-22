@@ -2,6 +2,8 @@
 
 $base-color: rgb(30, 30, 46);
 
+$text-color: rgb(205, 214, 244);
+
 $surface-color-1: rgb(69, 71, 90);
 $surface-color-0: rgb(49, 50, 68);
 
@@ -30,7 +32,7 @@ window.Bar {
     border-radius: 8px;
 
     font-size: larger;
-    color: $lavender-color;
+    color: $text-color;
   }
 
   .workspaces {
@@ -103,6 +105,8 @@ window.Bar {
 window.PowerMenu {
   background-color: rgba(0, 0, 0, 0.4);
 
+  color: $text-color;
+
   .dialog {
     padding: 32px;
 
@@ -127,6 +131,10 @@ window.PowerMenu {
 
       &.focus image {
         background-color: $lavender-color;
+      }
+
+      label {
+        margin-top: 4px;
       }
     }
   }

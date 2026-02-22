@@ -4,6 +4,18 @@ import { Accessor, Setter, createComputed, createEffect, createState } from "gni
 import Gtk from "gi://Gtk"
 import PowerMenuButton from "./PowerMenuButton"
 
+const buttons = {
+  "shutdown": "s",
+  "reboot": "r",
+  "lock": "c",
+  "logout": "o",
+  "pause": "p",
+  "stop": "t"
+}
+
+const buttonTypes = Object.keys(buttons) as Array<keyof typeof buttons>
+const buttonKeyVals = buttonTypes.map((buttonType) => Gdk.keyval_from_name(buttons[buttonType]))
+
 export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Accessor<boolean>, setPowerMenuOpen: Setter<boolean>) {
   const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
 
@@ -49,27 +61,42 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
     const keyController = Gtk.EventControllerKey.new()
     keyController.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
     keyController.connect("key-pressed", (_controller, keyval) => {
-      if (keyval == Gdk.KEY_Escape) {
-        setPowerMenuOpen(false);
-        setFocusIndex(0);
-        return true
-      } else if (keyval == Gdk.KEY_Right || keyval == Gdk.KEY_L || keyval == Gdk.KEY_l) {
-        setFocusIndex((focusIndex() + 1) % 5);
-        return true
-      } else if (keyval == Gdk.KEY_Left || keyval == Gdk.KEY_H || keyval == Gdk.KEY_h) {
-        setFocusIndex((focusIndex() + 4) % 5);
-        return true
-      } else if (keyval == Gdk.KEY_Return || keyval == Gdk.KEY_KP_Enter) {
-        console.log(`Activated button index: ${focusIndex()}`);
+      const length = buttonTypes.length
+
+      const index = buttonKeyVals.indexOf(Gdk.keyval_from_name(String.fromCharCode(keyval).toLowerCase()));
+      if (index !== -1) {
+        setFocusIndex(index);
+        return true;
       }
 
-      return false
+      switch (keyval) {
+        case Gdk.KEY_Escape:
+          setPowerMenuOpen(false);
+          setFocusIndex(0);
+          break;
+        case Gdk.KEY_Right:
+        case Gdk.KEY_L:
+        case Gdk.KEY_l:
+          setFocusIndex((focusIndex() + 1) % length);
+          break;
+        case Gdk.KEY_Left:
+        case Gdk.KEY_H:
+        case Gdk.KEY_h:
+          setFocusIndex((focusIndex() + length - 1) %  length);
+          break;
+        case Gdk.KEY_Return:
+        case Gdk.KEY_KP_Enter:
+          console.log(`Activated button index: ${focusIndex()}`);
+          break;
+        default:
+          break;
+      }
+
+      return true
     })
 
     ref.add_controller(keyController)
   }
-
-  const buttonTypes = ["shutdown", "reboot", "logout", "pause", "stop"]
 
   return (
     <window
@@ -101,6 +128,7 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
             <PowerMenuButton
               imageName={createComputed(() => `${buttonType}/${focusIndex() === index ? "base" : "lavendar"}`)}
               focus={createComputed(() => focusIndex() === index)}
+              label={buttonType.replace(buttons[buttonType], `[${buttons[buttonType]}]`)}
             />
           ))}
         </box>
