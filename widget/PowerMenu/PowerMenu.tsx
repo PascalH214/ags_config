@@ -8,8 +8,8 @@ import PowerMenuButton from "./PowerMenuButton"
 const buttons = {
   "shutdown": { shortcut: "s", command: "sleep 1 && systemctl poweroff" },
   "reboot": { shortcut: "r", command: "sleep 1 && systemctl reboot" },
-  "lock": { shortcut: "c", command: "sleep 1 && nohup hyprlock >/dev/null 2>&1 &" },
-  "logout": { shortcut: "o", command: "sleep 1 && hyprctl dispatch exit" },
+  "lock": { shortcut: "o", command: "sleep 1 && nohup hyprlock >/dev/null 2>&1 &" },
+  "logout": { shortcut: "g", command: "sleep 1 && hyprctl dispatch exit" },
   "pause": { shortcut: "p", command: "sleep 1 && (nohup hyprlock >/dev/null 2>&1 &) && sleep 1 && systemctl suspend" },
   "stop": { shortcut: "t", command: "sleep 1 && (nohup hyprlock >/dev/null 2>&1 &) && sleep 1 && systemctl hibernate" },
 }
@@ -79,10 +79,14 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
     keyController.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
     keyController.connect("key-pressed", (_controller, keyval) => {
       const length = buttonTypes.length
+      print(keyval)
 
       const index = buttonKeyVals.indexOf(Gdk.keyval_from_name(String.fromCharCode(keyval).toLowerCase()));
       if (index !== -1) {
         setFocusIndex(index);
+        return true;
+      } else if (49 <= keyval && keyval < 49 + length) {
+        setFocusIndex(keyval % 49)
         return true;
       }
 
@@ -110,7 +114,7 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
           break;
       }
 
-      return true
+      return false;
     })
 
     ref.add_controller(keyController)
@@ -147,6 +151,14 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
               imageName={createComputed(() => `${buttonType}/${focusIndex() === index ? "base" : "lavendar"}`)}
               focus={createComputed(() => focusIndex() === index)}
               label={buttonType.replace(buttons[buttonType].shortcut, `[${buttons[buttonType].shortcut}]`)}
+              onClick={(firstClick, secondClick) => {
+                if (firstClick && secondClick) {
+                  setPowerMenuOpen(false)
+                  void runCommand(buttons[buttonType].command)
+                } else if (firstClick) {
+                  setFocusIndex(index)
+                }
+              }}
             />
           ))}
         </box>

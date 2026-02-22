@@ -1,4 +1,4 @@
-import { Accessor } from "gnim"
+import { Accessor, createState } from "gnim"
 import Gtk from "gi://Gtk"
 import Icon from "../common/Icon"
 
@@ -6,15 +6,45 @@ export interface PowerMenuButtonProps {
   imageName: Accessor<string> | string
   focus: Accessor<boolean> | boolean
   label: string
+  onClick: (firstClick: boolean, secondClick: boolean) => void
 }
 
-export default function PowerMenuButton({ imageName, focus, label }: PowerMenuButtonProps) {
+export default function PowerMenuButton({ imageName, focus, label, onClick }: PowerMenuButtonProps) {
   const buttonClass = typeof focus === "function"
     ? focus((isFocused) => isFocused ? "power-menu-button focus" : "power-menu-button")
     : focus ? "power-menu-button focus" : "power-menu-button"
 
+  const setupBox = (ref: Gtk.Box) => {
+    const [firstClick, setFirstClick] = createState(false);
+    const [secondClick, setSecondClick] = createState(false);
+
+    const click = Gtk.GestureClick.new()
+    click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+    click.connect("released", async () => {
+      if (!firstClick()) {
+        setFirstClick(true)
+        onClick(true, false)
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(200);
+        if (secondClick()) onClick(true, true);
+        setFirstClick(false)
+        setSecondClick(false)
+      } else {
+        setSecondClick(true)
+      }
+
+      return false
+    });
+
+    ref.add_controller(click)
+  }
+
   return (
-    <box class={buttonClass} orientation={Gtk.Orientation.VERTICAL}>
+    <box 
+      $={setupBox}
+      class={buttonClass}
+      orientation={Gtk.Orientation.VERTICAL}
+    >
       <Icon
         imageName={imageName}
         pixelSize={79}

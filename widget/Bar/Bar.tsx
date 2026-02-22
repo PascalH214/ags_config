@@ -9,26 +9,8 @@ import HwInfo from "./HwInfo"
 export default function Bar(gdkmonitor: Gdk.Monitor, powerMenuOpen: Accessor<boolean>, setPowerMenuOpen: Setter<boolean>) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
-  const setupWindow = (ref: Astal.Window) => {
-    const keyController = Gtk.EventControllerKey.new()
-    keyController.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
-    keyController.connect("key-pressed", (_controller: Gtk.EventControllerKey, keyval: number, _keycode: number, state: Gdk.ModifierType) => {
-      const superPressed = (state & Gdk.ModifierType.SUPER_MASK) !== 0
-
-      if (superPressed && keyval === Gdk.KEY_Delete) {
-        setPowerMenuOpen(true)
-        return true
-      }
-
-      return false
-    })
-
-    ref.add_controller(keyController)
-  }
-
   return (
     <window
-      $={setupWindow}
       visible
       name="bar"
       class="Bar"
