@@ -18,12 +18,14 @@ $lavender-color: rgb(180, 190, 254);
 $button-width: 48px;
 $button-height: 16px;
 
+* {
+  font-family: monospace;
+}
+
 window.Bar {
   background: transparent;
 
   padding: 8px 16px 0px 16px;
-
-  font-weight: bold;
 
   .hw-info, .workspaces, .info-center {
     background-color: $base-color;
@@ -63,7 +65,6 @@ window.Bar {
         color: $flamingo-color;
       }
       .date {
-
         color: $pink-color;
       }
       .uptime {
@@ -108,8 +109,6 @@ window.PowerMenu {
   color: $text-color;
 
   .dialog {
-    // background-color: $base-color;
-
     padding: 48px;
 
     border-radius: 16px;
