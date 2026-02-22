@@ -103,14 +103,16 @@ window.Bar {
 }
 
 window.PowerMenu {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.8);
 
   color: $text-color;
 
   .dialog {
-    padding: 32px;
+    // background-color: $base-color;
 
-    border-radius: 32px;
+    padding: 48px;
+
+    border-radius: 16px;
 
     .power-menu-button {
       margin: 0px 8px;

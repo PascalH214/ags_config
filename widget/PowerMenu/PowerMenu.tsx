@@ -79,7 +79,6 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
     keyController.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
     keyController.connect("key-pressed", (_controller, keyval) => {
       const length = buttonTypes.length
-      print(keyval)
 
       const index = buttonKeyVals.indexOf(Gdk.keyval_from_name(String.fromCharCode(keyval).toLowerCase()));
       if (index !== -1) {
