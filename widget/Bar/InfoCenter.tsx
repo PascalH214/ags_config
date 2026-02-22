@@ -2,7 +2,6 @@ import { Gtk } from "ags/gtk4";
 import { createPoll } from "ags/time";
 import { createComputed, Accessor, Setter } from "gnim"
 
-import Icon from "../common/Icon";
 import LabelWithIcon from "../common/LabelWithIcon";
 import DividingLine from "../common/DividingLine";
 import ShutdownButton from "./ShutdownButton";
