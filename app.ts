@@ -4,7 +4,7 @@ import { createState } from "gnim"
 import style from "./style.scss"
 import Bar from "./widget/Bar/Bar"
 import PowerMenu from "./widget/PowerMenu/PowerMenu"
-import Notification from "./widget/Notification/Notifications"
+import NotificationContainer from "./widget/Notification/NotificationContainer"
 
 const [powerMenuOpen, setPowerMenuOpen] = createState(false);
 
@@ -18,6 +18,6 @@ app.start({
   main() {
     app.get_monitors().map(monitor => Bar(monitor, powerMenuOpen, setPowerMenuOpen))
     app.get_monitors().map(monitor => PowerMenu(monitor, powerMenuOpen, setPowerMenuOpen))
-    app.get_monitors().map(Notification)
+    app.get_monitors().map(NotificationContainer)
   },
 })

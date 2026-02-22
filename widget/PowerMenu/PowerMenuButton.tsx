@@ -1,6 +1,7 @@
 import { Accessor, createState } from "gnim"
 import Gtk from "gi://Gtk"
 import Icon from "../common/Icon"
+import sleep from "../../sleep"
 
 export interface PowerMenuButtonProps {
   imageName: Accessor<string> | string
@@ -24,7 +25,6 @@ export default function PowerMenuButton({ imageName, focus, label, onClick }: Po
       if (!firstClick()) {
         setFirstClick(true)
         onClick(true, false)
-        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
         await sleep(200);
         if (secondClick()) onClick(true, true);
         setFirstClick(false)
