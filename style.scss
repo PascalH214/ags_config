@@ -35,6 +35,10 @@ window.Bar {
 
     font-size: larger;
     color: $text-color;
+
+    border-style: solid;
+    border-width: 0.4px;
+    border-color: $overlay-color-0;
   }
 
   .workspaces {

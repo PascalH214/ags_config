@@ -1,7 +1,7 @@
 import { Gtk } from "ags/gtk4"
-import { createState } from "gnim"
 import Hyprland from "gi://AstalHyprland"
 import Gio from "gi://Gio"
+import { createState } from "gnim"
 
 import LabelWithIcon from "../common/LabelWithIcon"
 
