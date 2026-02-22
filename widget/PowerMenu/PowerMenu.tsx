@@ -2,19 +2,36 @@ import app from "ags/gtk4/app"
 import { Astal, Gdk } from "ags/gtk4"
 import { Accessor, Setter, createComputed, createEffect, createState } from "gnim"
 import Gtk from "gi://Gtk"
+import Gio from "gi://Gio"
 import PowerMenuButton from "./PowerMenuButton"
 
 const buttons = {
-  "shutdown": "s",
-  "reboot": "r",
-  "lock": "c",
-  "logout": "o",
-  "pause": "p",
-  "stop": "t"
+  "shutdown": { shortcut: "s", command: "sleep 1 && systemctl poweroff" },
+  "reboot": { shortcut: "r", command: "sleep 1 && systemctl reboot" },
+  "lock": { shortcut: "c", command: "sleep 1 && nohup hyprlock >/dev/null 2>&1 &" },
+  "logout": { shortcut: "o", command: "sleep 1 && hyprctl dispatch exit" },
+  "pause": { shortcut: "p", command: "sleep 1 && (nohup hyprlock >/dev/null 2>&1 &) && sleep 1 && systemctl suspend" },
+  "stop": { shortcut: "t", command: "sleep 1 && (nohup hyprlock >/dev/null 2>&1 &) && sleep 1 && systemctl hibernate" },
 }
 
 const buttonTypes = Object.keys(buttons) as Array<keyof typeof buttons>
-const buttonKeyVals = buttonTypes.map((buttonType) => Gdk.keyval_from_name(buttons[buttonType]))
+const buttonKeyVals = buttonTypes.map((buttonType) => Gdk.keyval_from_name(buttons[buttonType].shortcut))
+
+async function runCommand(command: string): Promise<void> {
+  Gio.Subprocess.new(
+    [
+      "env",
+      "-u",
+      "BASH_ENV",
+      "bash",
+      "--noprofile",
+      "--norc",
+      "-c",
+      `(${command}) >/dev/null 2>&1 &`,
+    ],
+    Gio.SubprocessFlags.NONE,
+  )
+}
 
 export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Accessor<boolean>, setPowerMenuOpen: Setter<boolean>) {
   const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
@@ -86,7 +103,8 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
           break;
         case Gdk.KEY_Return:
         case Gdk.KEY_KP_Enter:
-          console.log(`Activated button index: ${focusIndex()}`);
+          setPowerMenuOpen(false)
+          void runCommand(buttons[buttonTypes[focusIndex()]].command)
           break;
         default:
           break;
@@ -128,7 +146,7 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
             <PowerMenuButton
               imageName={createComputed(() => `${buttonType}/${focusIndex() === index ? "base" : "lavendar"}`)}
               focus={createComputed(() => focusIndex() === index)}
-              label={buttonType.replace(buttons[buttonType], `[${buttons[buttonType]}]`)}
+              label={buttonType.replace(buttons[buttonType].shortcut, `[${buttons[buttonType].shortcut}]`)}
             />
           ))}
         </box>
