@@ -13,6 +13,7 @@ $flamingo-color: rgb(242, 205, 205);
 $pink-color: rgb(245, 194, 231);
 $mauve-color: rgb(203, 166, 247);
 $red-color: rgb(243, 139, 168);
+$green-color: rgb(166, 227, 161);
 $lavender-color: rgb(180, 190, 254);
 
 $button-width: 48px;
@@ -147,4 +148,54 @@ window.PowerMenu {
 
 window.NotificationContainer {
   margin: 8px 16px;
+
+  // border-style: solid;
+  // border-width: 2px;
+  // border-color: $lavender-color;
+  // border-radius: 32px;
+
+  .notification {
+    background-color: $base-color;
+
+    padding: 24px;
+
+    border-left-style: solid;
+    border-right-style: solid;
+    border-width: 2px;
+    border-color: $lavender-color;
+
+    image {
+      border-radius: 16px;
+
+      margin: 0px 16px 0px 0px;
+    }
+
+    .title {
+      margin-bottom: 4px;
+
+      &.low {
+        border-color: $green-color;
+      }
+
+      &.normal {
+        color: $lavender-color;
+      }
+
+      &.critical {
+        color: $red-color;
+      }
+    }
+
+    &:first-child {
+      border-top-style: solid;
+      border-top-left-radius: 32px;
+      border-top-right-radius: 32px;
+    }
+
+    &:last-child {
+      border-bottom-style: solid;
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
+    }
+  }
 }

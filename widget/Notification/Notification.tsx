@@ -2,24 +2,19 @@ import Gtk from "gi://Gtk?version=4.0"
 import Gdk from "gi://Gdk?version=4.0"
 import Adw from "gi://Adw"
 import GLib from "gi://GLib"
-import AstalNotifd from "gi://AstalNotifd"
+import Notifd from "gi://AstalNotifd"
 import Pango from "gi://Pango"
-
-function isIcon(icon?: string | null) {
-  const iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!)
-  return icon && iconTheme.has_icon(icon)
-}
+import app from "ags/gtk4/app"
+import StateIcon from "../common/StateIcon"
+import GObject from "gnim/gobject"
+import sleep from "../../sleep"
 
 function fileExists(path: string) {
   return GLib.file_test(path, GLib.FileTest.EXISTS)
 }
 
-function time(time: number, format = "%H:%M") {
-  return GLib.DateTime.new_from_unix_local(time).format(format)!
-}
-
-function urgency(n: AstalNotifd.Notification) {
-  const { LOW, NORMAL, CRITICAL } = AstalNotifd.Urgency
+function urgency(n: Notifd.Notification) {
+  const { LOW, NORMAL, CRITICAL } = Notifd.Urgency
   switch (n.urgency) {
     case LOW:
       return "low"
@@ -32,86 +27,76 @@ function urgency(n: AstalNotifd.Notification) {
 }
 
 interface NotificationProps {
-  notification: AstalNotifd.Notification
+  notification: Notifd.Notification
 }
 
-export default function Notification({ notification: n }: NotificationProps) {
+const urgencies = ["low", "normal", "critical"];
+
+export default function Notification({ notification }: NotificationProps) {
+  let iconName: string | null = null;
+
+  let image: GObject.Object | null = null;
+  if (notification.image != null && notification.image != "") {
+    iconName = notification.image
+  } else if (notification.appIcon != null && notification.appIcon != "") {
+    iconName = notification.appIcon
+  } else if (notification.desktopEntry != null && notification.desktopEntry != "") {
+    iconName = notification.desktopEntry
+  }
+
+  const thisUrgency = urgency(notification);
+  image = iconName == null || !fileExists(iconName)
+    ? <StateIcon
+      states={urgencies}
+      state={urgencies.indexOf(thisUrgency)}
+      imageGroup={"urgencyEmojis"}
+      pixelSize={60}
+    />
+    : new Gtk.Image({
+      file: iconName == null ? "" : iconName,
+      pixelSize: 60
+    });
+
+  const appNameObject = Gtk.Label.new((`${thisUrgency} - ${notification.get_app_name()}`).toUpperCase());
+  appNameObject.set_css_classes(["title", thisUrgency]);
+  appNameObject.set_halign(Gtk.Align.START);
+  appNameObject.set_wrap(true);
+  appNameObject.set_wrap_mode(Pango.WrapMode.CHAR);
+  appNameObject.set_max_width_chars(20);
+
+  const summaryObject = Gtk.Label.new(notification.get_summary().padEnd(40, " "));
+  summaryObject.set_halign(Gtk.Align.START);
+  summaryObject.set_wrap(true);
+  summaryObject.set_wrap_mode(Pango.WrapMode.CHAR);
+  summaryObject.set_max_width_chars(40);
+
   return (
-    <Adw.Clamp maximumSize={400}>
+    <box
+      $={async (ref) => {
+        const click = Gtk.GestureClick.new()
+        click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        click.connect("released", async () => {
+          notification.dismiss();
+        });
+
+        ref.add_controller(click);
+
+        if (notification.get_expire_timeout() <= 0) {
+          await sleep(5000);
+          notification.dismiss();
+        }
+      }}
+      class={"notification"}
+      widthRequest={300}
+      orientation={Gtk.Orientation.HORIZONTAL}
+    >
+      {image}
       <box
-        widthRequest={400}
-        class={`Notification ${urgency(n)}`}
         orientation={Gtk.Orientation.VERTICAL}
       >
-        <box class="header">
-          {(n.appIcon || isIcon(n.desktopEntry)) && (
-            <image
-              class="app-icon"
-              visible={Boolean(n.appIcon || n.desktopEntry)}
-              iconName={n.appIcon || n.desktopEntry}
-            />
-          )}
-          <label
-            class="app-name"
-            halign={Gtk.Align.START}
-            ellipsize={Pango.EllipsizeMode.END}
-            label={n.appName || "Unknown"}
-          />
-          <label
-            class="time"
-            hexpand
-            halign={Gtk.Align.END}
-            label={time(n.time)}
-          />
-          <button onClicked={() => n.dismiss()}>
-            <image iconName="window-close-symbolic" />
-          </button>
-        </box>
-        <Gtk.Separator visible />
-        <box class="content">
-          {n.image && fileExists(n.image) && (
-            <image valign={Gtk.Align.START} class="image" file={n.image} />
-          )}
-          {n.image && isIcon(n.image) && (
-            <box valign={Gtk.Align.START} class="icon-image">
-              <image
-                iconName={n.image}
-                halign={Gtk.Align.CENTER}
-                valign={Gtk.Align.CENTER}
-              />
-            </box>
-          )}
-          <box orientation={Gtk.Orientation.VERTICAL}>
-            <label
-              class="summary"
-              halign={Gtk.Align.START}
-              xalign={0}
-              label={n.summary}
-              ellipsize={Pango.EllipsizeMode.END}
-            />
-            {n.body && (
-              <label
-                class="body"
-                wrap
-                useMarkup
-                halign={Gtk.Align.START}
-                xalign={0}
-                justify={Gtk.Justification.FILL}
-                label={n.body}
-              />
-            )}
-          </box>
-        </box>
-        {n.actions.length > 0 && (
-          <box class="actions">
-            {n.actions.map(({ label, id }) => (
-              <button hexpand onClicked={() => n.invoke(id)}>
-                <label label={label} halign={Gtk.Align.CENTER} hexpand />
-              </button>
-            ))}
-          </box>
-        )}
+        {appNameObject}
+        {summaryObject}
       </box>
-    </Adw.Clamp>
-  )
+    </box>
+  );
 }
