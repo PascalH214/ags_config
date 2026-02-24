@@ -17,7 +17,7 @@
   "scripts": {
     "build": "ags bundle app.ts ./builds/app -d \"DATADIR='/home/pascal/.config/ags'\"",
     "precopy": "npm run build",
-    "copy": "mkdir -p ~/.config/ags && cp -r ./builds/app ./images ~/.config/ags/",
+    "copy": "mkdir -p ~/.config/ags && cp -r ./builds/app ./awk ./images ~/.config/ags/",
     "dev": "nodemon --watch app.ts --watch widget --watch style.scss --watch awk --ext ts,tsx,scss,awk --exec \"ags quit || true; npm run copy && ~/.config/ags/app\"",
     "prestart:bg": "npm run copy",
     "start:bg": "sh -c 'nohup ~/.config/ags/app >/tmp/ags-bar.log 2>&1 &'"

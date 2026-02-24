@@ -4,10 +4,11 @@ import Gio from "gi://Gio"
 import { createState } from "gnim"
 
 import LabelWithIcon from "../common/LabelWithIcon"
+import GLib from "gi://GLib"
 
 const keyboardLayoutCmd = `
   hyprctl devices | 
-  awk -f ./awk/get_keyboard_layouts.awk |
+  awk -f ${SRC}/awk/get_keyboard_layouts.awk |
   sort |
   tail -n 1 |
   awk '{ if (NF==2) { print $2; exit } else print $2,$NF }'
@@ -37,10 +38,10 @@ export default function KeyboardLayout(props: Partial<Gtk.Box.ConstructorProps> 
 
   getKeyboardLayout()
     .then((layout) => setKeyboardLayout(layout))
-    .catch((err) => {})
+    .catch(() => setKeyboardLayout("?") )
 
   hyprland.connect("keyboard-layout", () => {
-    getKeyboardLayout().then(layout => setKeyboardLayout(layout)).catch(err => {})
+    getKeyboardLayout().then(layout => setKeyboardLayout(layout)).catch(() => setKeyboardLayout("?") )
   })
 
   return (
