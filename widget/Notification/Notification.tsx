@@ -57,18 +57,30 @@ export default function Notification({ notification }: NotificationProps) {
       pixelSize: 60
     });
 
-  const appNameObject = Gtk.Label.new((`${thisUrgency} - ${notification.get_app_name()}`).toUpperCase());
-  appNameObject.set_css_classes(["title", thisUrgency]);
-  appNameObject.set_halign(Gtk.Align.START);
-  appNameObject.set_wrap(true);
-  appNameObject.set_wrap_mode(Pango.WrapMode.CHAR);
-  appNameObject.set_max_width_chars(20);
+  const appNameLabelObject = Gtk.Label.new((`${notification.get_app_name()}`).toUpperCase());
+  appNameLabelObject.set_css_classes(["title", thisUrgency]);
+  appNameLabelObject.set_halign(Gtk.Align.START);
+  appNameLabelObject.set_wrap(true);
+  appNameLabelObject.set_wrap_mode(Pango.WrapMode.CHAR);
+  appNameLabelObject.set_max_width_chars(20);
 
-  const summaryObject = Gtk.Label.new(notification.get_summary().padEnd(40, " "));
-  summaryObject.set_halign(Gtk.Align.START);
-  summaryObject.set_wrap(true);
-  summaryObject.set_wrap_mode(Pango.WrapMode.CHAR);
-  summaryObject.set_max_width_chars(40);
+  let content = notification.get_body();
+  if (
+    content == null || content == "" ||
+    (
+      content.length > 120 &&
+      notification.get_summary() != null &&
+      notification.get_summary() != ""
+    )
+  ) {
+    content = `Summary: ${notification.get_summary()}`;
+  }
+
+  const contentLabelObject = Gtk.Label.new(content);
+  contentLabelObject.set_halign(Gtk.Align.START);
+  contentLabelObject.set_wrap(true);
+  contentLabelObject.set_wrap_mode(Pango.WrapMode.CHAR);
+  contentLabelObject.set_max_width_chars(40);
 
   return (
     <box
@@ -94,8 +106,8 @@ export default function Notification({ notification }: NotificationProps) {
       <box
         orientation={Gtk.Orientation.VERTICAL}
       >
-        {appNameObject}
-        {summaryObject}
+        {appNameLabelObject}
+        {contentLabelObject}
       </box>
     </box>
   );
