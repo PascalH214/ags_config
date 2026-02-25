@@ -65,6 +65,22 @@ window.Bar {
   }
 
   .info-center {
+    .multimedia {
+      margin-right: 8px;
+
+      :first-child {
+        margin-left: 0px;
+      }
+
+      * {
+        margin: 0px 4px;
+      }
+
+      :last-child {
+        margin-right: 0px;
+      }
+    }
+
     .time-info {
       .time {
         color: $flamingo-color;

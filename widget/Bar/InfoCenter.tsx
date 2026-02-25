@@ -5,6 +5,7 @@ import { createComputed, Accessor, Setter } from "gnim"
 import LabelWithIcon from "../common/LabelWithIcon";
 import DividingLine from "../common/DividingLine";
 import ShutdownButton from "./ShutdownButton";
+import MultiMedia from "./MultiMedia";
 
 interface InfoCenterProps extends Partial<Gtk.Box.ConstructorProps> {
   powerMenuOpen: Accessor<boolean>;
@@ -61,6 +62,7 @@ export default function InfoCenter(props: InfoCenterProps) {
       {...boxProps}
     >
       <box class="time-info">
+        <MultiMedia />
         <LabelWithIcon className="time" imageName="clock" label={time} />
         <DividingLine />
         <LabelWithIcon className="date" imageName="calendar" label={date} />
