@@ -9,20 +9,23 @@ const mpris = Mpris.get_default();
 
 export default function MultiMedia() {
   const [currentPlayer, setCurrentPlayer] = createState<Mpris.Player | null>(null);
-  const [currentPlaybackStatus, setCurrentPlaybackStatus] = createState<Mpris.PlaybackStatus>(Mpris.PlaybackStatus.STOPPED);
+  const [playPauseIcon, setPlayPauseIcon] = createState<string>("play");
 
   mpris.connect("player-added", (mpris, player) => {
-    if (player.can_play) {
+    if (player.can_play && player.can_go_next && player.can_go_previous) {
       setCurrentPlayer(player);
+      const setPlayPauseIconFunc = () => setPlayPauseIcon(player.playback_status === Mpris.PlaybackStatus.PLAYING ? "pause" : "play" );
       player.connect("notify::playback-status", () => {
-        setCurrentPlaybackStatus(player.playback_status);
+        setPlayPauseIconFunc();
       });
+      setPlayPauseIconFunc();
     }
   });
 
   mpris.connect("player-closed", (mpris, player) => {
     if (currentPlayer() === player) {
       setCurrentPlayer(null);
+      setPlayPauseIcon("play");
     }
   });
 
@@ -53,12 +56,6 @@ export default function MultiMedia() {
     });
     ref.add_controller(click);
   }
-
-  const playPauseIcon = createComputed(() =>
-    currentPlaybackStatus() === Mpris.PlaybackStatus.PLAYING ? "pause" : "play"
-  )
-
-  const enabledState = createComputed(() => (currentPlayer() == null ? 0 : 1))
 
   return (
     <box class="multimedia" >
