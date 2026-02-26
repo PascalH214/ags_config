@@ -10,27 +10,22 @@ const mpris = Mpris.get_default();
 export default function MultiMedia() {
   const players = createBinding(mpris, "players");
   const [currentPlayer, setCurrentPlayer] = createState<Mpris.Player | null>(null);
-  const [playbackStatus, setPlaybackStatus] = createState<Mpris.PlaybackStatus>(Mpris.PlaybackStatus.STOPPED);
+  const [imageGroup, setImageGroup] = createState<string>("play");
 
-  createEffect(() => {
-    players().forEach(player => {
-      if (player.can_play) {
-        setCurrentPlayer(player);
-        player.connect("notify::playback-status", () => {
-          setPlaybackStatus(player.playbackStatus);
-        });
-        setPlaybackStatus(player.playbackStatus);
-          return;
-        }
-    });
+  mpris.connect("player-added", (mpris, player) => {
+    if (player.can_play) {
+      setCurrentPlayer(player);
+      player.connect("notify::playback-status", () => {
+        setImageGroup(player.playbackStatus == Mpris.PlaybackStatus.PLAYING ? "pause" : "play");
+      });
+      setImageGroup(player.playbackStatus == Mpris.PlaybackStatus.PLAYING ? "pause" : "play");
+    }
   });
 
-  const playPauseState = createComputed(() => {
-    switch (playbackStatus()) {
-      case Mpris.PlaybackStatus.PLAYING:
-        return 1;
-      default:
-        return 0;
+  mpris.connect("player-closed", (mpris, player) => {
+    if (currentPlayer() === player) {
+      setCurrentPlayer(null);
+      setImageGroup("play");
     }
   });
 
@@ -64,20 +59,25 @@ export default function MultiMedia() {
 
   return (
     <box class="multimedia" >
-      <Icon
+      <StateIcon
         $={(ref) => setAction(ref, previous)}
-        imageName={"skip-previous"}
+        states={["surface0", "lavendar"]}
+        imageGroup={"skip_previous"}
+        state={currentPlayer((p) => p == null ? 0 : 1)}
         pixelSize={20}
       />
       <StateIcon
         $={(ref) => setAction(ref, toggle)}
-        imageGroup={"play_pause"}
-        states={["play", "pause"]}
-        state={playPauseState} pixelSize={20}
+        states={["surface0", "lavendar"]}
+        imageGroup={imageGroup()}
+        state={currentPlayer((p) => p == null ? 0 : 1)}
+        pixelSize={20}
       />
-      <Icon
+      <StateIcon
         $={(ref) => setAction(ref, next)}
-        imageName={"skip-next"}
+        states={["surface0", "lavendar"]}
+        imageGroup={"skip_next"}
+        state={currentPlayer((p) => p == null ? 0 : 1)}
         pixelSize={20}
       />
     </box>

@@ -1,4 +1,4 @@
-import type { Accessor } from "gnim"
+import { createComputed, type Accessor } from "gnim"
 import Icon from "../common/Icon"
 
 interface StateIconProps extends Omit<JSX.IntrinsicElements["image"], "file"> {
