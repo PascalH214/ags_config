@@ -1,11 +1,14 @@
 import { Gtk } from "ags/gtk4"
-import type { Accessor } from "gnim"
+import { createComputed, type Accessor } from "gnim"
+
+type MaybeAccessor<T> = T | Accessor<T>
+const get = <T,>(v: MaybeAccessor<T>): T => (typeof v === "function" ? (v as Accessor<T>)() : v)
 
 export interface IconProps extends Omit<JSX.IntrinsicElements["image"], "file"> {
-  imageParentFolder?: string,
-  imageSubFolder?: string,
-  imageName: Accessor<string> | string,
-  fileEnding?: string,
+  imageParentFolder?: MaybeAccessor<string>
+  imageSubFolder?: MaybeAccessor<string | undefined>
+  imageName: MaybeAccessor<string>
+  fileEnding?: string
 }
 
 export default function Icon({
@@ -16,11 +19,18 @@ export default function Icon({
   class: incomingClass,
   ...props
 }: IconProps) {
-  const filePrefix = `${imageParentFolder}${imageSubFolder == undefined ? "/" : `/${imageSubFolder}/`}`
-  const file =
-    typeof imageName === "function"
-      ? imageName((name) => `${filePrefix}${name}${fileEnding}`)
-      : `${filePrefix}${imageName}${fileEnding}`
+  const filePrefix = createComputed(() => {
+    const parent = get(imageParentFolder)
+    const sub = imageSubFolder === undefined ? undefined : get(imageSubFolder)
+    return `${parent}${sub == undefined ? "/" : `/${sub}/`}`
+  })
+
+  const file = createComputed(() => {
+    const prefix = filePrefix()
+    const name = get(imageName)
+    return `${prefix}${name}${fileEnding}`
+  })
+
   const mergedClass = incomingClass == undefined ? "image" : `image ${incomingClass}`
 
   return (

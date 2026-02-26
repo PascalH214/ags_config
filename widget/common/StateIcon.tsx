@@ -1,11 +1,13 @@
 import { createComputed, type Accessor } from "gnim"
 import Icon from "../common/Icon"
 
+type MaybeAccessor<T> = T | Accessor<T>
+
 interface StateIconProps extends Omit<JSX.IntrinsicElements["image"], "file"> {
-  states?: string[],
-  state: Accessor<number> | number,
-  imageGroup: string,
-  fileEnding?: string,
+  states?: string[]
+  state: Accessor<number> | number
+  imageGroup: MaybeAccessor<string>
+  fileEnding?: string
   pixelSize?: number
 }
 
@@ -21,10 +23,15 @@ export default function StateIcon({
       ? state((value) => `${states[value]}`)
       : `${states[state]}`
 
+  const imageSubFolder =
+    typeof imageGroup === "function"
+      ? imageGroup
+      : createComputed(() => imageGroup)
+
   return (
     <Icon
       {...props}
-      imageSubFolder={imageGroup}
+      imageSubFolder={imageSubFolder}
       imageName={imageName}
       fileEnding={fileEnding}
     />

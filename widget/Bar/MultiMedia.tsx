@@ -8,24 +8,21 @@ import GObject from "gnim/gobject";
 const mpris = Mpris.get_default();
 
 export default function MultiMedia() {
-  const players = createBinding(mpris, "players");
   const [currentPlayer, setCurrentPlayer] = createState<Mpris.Player | null>(null);
-  const [imageGroup, setImageGroup] = createState<string>("play");
+  const [currentPlaybackStatus, setCurrentPlaybackStatus] = createState<Mpris.PlaybackStatus>(Mpris.PlaybackStatus.STOPPED);
 
   mpris.connect("player-added", (mpris, player) => {
     if (player.can_play) {
       setCurrentPlayer(player);
       player.connect("notify::playback-status", () => {
-        setImageGroup(player.playbackStatus == Mpris.PlaybackStatus.PLAYING ? "pause" : "play");
+        setCurrentPlaybackStatus(player.playback_status);
       });
-      setImageGroup(player.playbackStatus == Mpris.PlaybackStatus.PLAYING ? "pause" : "play");
     }
   });
 
   mpris.connect("player-closed", (mpris, player) => {
     if (currentPlayer() === player) {
       setCurrentPlayer(null);
-      setImageGroup("play");
     }
   });
 
@@ -57,6 +54,12 @@ export default function MultiMedia() {
     ref.add_controller(click);
   }
 
+  const playPauseIcon = createComputed(() =>
+    currentPlaybackStatus() === Mpris.PlaybackStatus.PLAYING ? "pause" : "play"
+  )
+
+  const enabledState = createComputed(() => (currentPlayer() == null ? 0 : 1))
+
   return (
     <box class="multimedia" >
       <StateIcon
@@ -69,7 +72,7 @@ export default function MultiMedia() {
       <StateIcon
         $={(ref) => setAction(ref, toggle)}
         states={["surface0", "lavendar"]}
-        imageGroup={imageGroup()}
+        imageGroup={playPauseIcon}
         state={currentPlayer((p) => p == null ? 0 : 1)}
         pixelSize={20}
       />
