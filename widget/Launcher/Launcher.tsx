@@ -1,73 +1,55 @@
-import app from "ags/gtk4/app"
-import { Astal, Gdk, Gtk } from "ags/gtk4"
-import { Accessor, Setter, createEffect } from "gnim";
+import { Gdk, Gtk } from "ags/gtk4"
+import { Accessor, Setter, createEffect, createState } from "gnim";
+import CenteredDialogWithBackdrop from "../common/CenteredDialogWithBackdrop";
 
 export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor<boolean>, setLauncherOpen: Setter<boolean>) {
-  const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
+  let entry: Gtk.Entry;
 
-  let win: Astal.Window;
-  let backdrop: Gtk.CenterBox;
-  let dialog: Gtk.Box;
+  const [entryText, setEntryText] = createState("");
 
-  createEffect(() => {
-    if (!win) return
-    const open = launcherOpen()
-    win.visible = open;
-
-    if (open) {
-      win.present()
-    }
-  });
-
-  const setupBackdrop = (ref: Gtk.CenterBox) => {
-    backdrop = ref
-    const click = Gtk.GestureClick.new()
-
-    click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
-
-    click.connect("released", (_gesture, _presses, x, y) => {
-      if (!dialog) return
-
-      const picked = win.pick(x, y, Gtk.PickFlags.DEFAULT)
-      const inside = picked === dialog || (!!picked && picked.is_ancestor(dialog))
-
-      if (!inside) {
-        setLauncherOpen(false)
-      }
-    })
-
-    backdrop.add_controller(click)
+  const closeDialog = () => {
+    setEntryText("");
+    entry.set_text("");
+    setLauncherOpen(false);
   }
 
-  return (
-    <window
-      $={(ref) => win = ref}
-      name="launcher"
-      class="Launcher"
-      gdkmonitor={gdkmonitor}
-      exclusivity={Astal.Exclusivity.IGNORE}
-      anchor={TOP | BOTTOM | LEFT | RIGHT}
-      application={app}
-      keymode={Astal.Keymode.EXCLUSIVE}
+  const setupInputField = (ref: Gtk.Entry) => {
+    entry = ref
+    const keyController = Gtk.EventControllerKey.new()
+    keyController.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+    keyController.connect("key-released", (_controller, keyval) => {
+      if (keyval === Gdk.KEY_Escape) {
+        closeDialog()
+        return true;
+      }
+      setEntryText(ref.text)
+      return true;
+    });
+
+    ref.add_controller(keyController)
+  };
+
+  createEffect(() => {
+    if (!launcherOpen()) closeDialog()
+  });
+
+  return <CenteredDialogWithBackdrop
+    gdkmonitor={gdkmonitor}
+    windowName="launcher"
+    windowClass="Launcher"
+    open={launcherOpen}
+    setOpen={setLauncherOpen}
+  >
+    <box
+      class="dialog"
+      halign={Gtk.Align.CENTER}
+      valign={Gtk.Align.CENTER}
+      $type="center"
     >
-      <centerbox
-        $={setupBackdrop}
-        class="backdrop"
-        hexpand
-        vexpand
-        halign={Gtk.Align.FILL}
-        valign={Gtk.Align.FILL}
-      >
-        <box
-          $={(ref) => dialog = ref}
-          class="dialog"
-          halign={Gtk.Align.CENTER}
-          valign={Gtk.Align.CENTER}
-          $type="center"
-        >
-          a
-        </box>
-      </centerbox>
-    </window>
-  )
+      <Gtk.Entry
+        $={setupInputField}
+        widthRequest={400}
+      />
+    </box>
+  </CenteredDialogWithBackdrop>
 }

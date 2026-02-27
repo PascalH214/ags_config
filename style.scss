@@ -128,12 +128,6 @@ window.PowerMenu, window.Launcher {
   background-color: rgba(0, 0, 0, 0.8);
 
   color: $text-color;
-
-  .dialog {
-    padding: 48px;
-
-    border-radius: 16px;
-  }
 }
 
 window.PowerMenu {
@@ -167,6 +161,14 @@ window.PowerMenu {
 window.Launcher {
   .dialog {
     background-color: $base-color;
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    entry {
+
+    }
   }
 }
 
