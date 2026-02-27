@@ -2,18 +2,22 @@ import { Gtk } from "ags/gtk4";
 import { createPoll } from "ags/time";
 import { createComputed, Accessor, Setter } from "gnim"
 
+import Icon from "../common/Icon";
 import LabelWithIcon from "../common/LabelWithIcon";
 import DividingLine from "../common/DividingLine";
 import ShutdownButton from "./ShutdownButton";
 import MultiMedia from "./MultiMedia";
+import GObject from "gnim/gobject";
 
 interface InfoCenterProps extends Partial<Gtk.Box.ConstructorProps> {
   powerMenuOpen: Accessor<boolean>;
   setPowerMenuOpen: Setter<boolean>;
+  launcherOpen: Accessor<boolean>;
+  setLauncherOpen: Setter<boolean>;
 }
 
 export default function InfoCenter(props: InfoCenterProps) {
-  const { powerMenuOpen, setPowerMenuOpen, ...boxProps } = props
+  const { powerMenuOpen, setPowerMenuOpen, launcherOpen, setLauncherOpen, ...boxProps } = props
   const uptimeState = createPoll("", 20000, `bash -c "uptime | awk '{print $3}' | cut -d, -f1"`);
   const dateState = createPoll("", 1000, () => new Date().toISOString());
 
@@ -54,6 +58,17 @@ export default function InfoCenter(props: InfoCenterProps) {
     return `${hours}:${minutes}`
   });
 
+  const setupLauncherIcon = (self: Gtk.Image) => {
+    const click = Gtk.GestureClick.new();
+    click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+
+    click.connect("released", () => {
+      setLauncherOpen(!launcherOpen())
+    })
+
+    self.add_controller(click);
+  }
+
   return (
     <box
       name="info-center"
@@ -68,6 +83,11 @@ export default function InfoCenter(props: InfoCenterProps) {
         <LabelWithIcon className="date" imageName="calendar" label={date} />
         <DividingLine />
         <LabelWithIcon className="uptime" imageName="stopwatch" label={uptime} />
+        <Icon
+          $={setupLauncherIcon}
+          imageName="rightArrow/lavendar"
+          pixelSize={20}
+        />
         <ShutdownButton onClicked={() => {
             setPowerMenuOpen(!powerMenuOpen());
           }}

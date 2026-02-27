@@ -6,7 +6,13 @@ import Workspaces from "./Workspaces"
 import InfoCenter from "./InfoCenter"
 import HwInfo from "./HwInfo"
 
-export default function Bar(gdkmonitor: Gdk.Monitor, powerMenuOpen: Accessor<boolean>, setPowerMenuOpen: Setter<boolean>) {
+export default function Bar(
+  gdkmonitor: Gdk.Monitor,
+  powerMenuOpen: Accessor<boolean>,
+  setPowerMenuOpen: Setter<boolean>,
+  launcherOpen: Accessor<boolean>,
+  setLauncherOpen: Setter<boolean>
+) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
 
   return (
@@ -23,7 +29,12 @@ export default function Bar(gdkmonitor: Gdk.Monitor, powerMenuOpen: Accessor<boo
       <centerbox>
         <HwInfo />
         <Workspaces />
-        <InfoCenter powerMenuOpen={powerMenuOpen} setPowerMenuOpen={setPowerMenuOpen} />
+        <InfoCenter
+          powerMenuOpen={powerMenuOpen}
+          setPowerMenuOpen={setPowerMenuOpen}
+          launcherOpen={launcherOpen}
+          setLauncherOpen={setLauncherOpen}
+        />
       </centerbox>
     </window>
   )
