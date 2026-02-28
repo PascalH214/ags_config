@@ -13,7 +13,10 @@ const [launcherOpen, setLauncherOpen] = createState(false);
 app.start({
   css: style,
   requestHandler(argv: string[], response: (response: string) => void) {
-    if (argv[0] === "toggle-power-menu") {
+    if (argv[0] === "toggle-launcher") {
+      setLauncherOpen(!launcherOpen())
+    }
+    else if (argv[0] === "toggle-power-menu") {
       setPowerMenuOpen(!powerMenuOpen())
     }
   },

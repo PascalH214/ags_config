@@ -4,7 +4,6 @@ import Gio from "gi://Gio"
 import { createState } from "gnim"
 
 import LabelWithIcon from "../common/LabelWithIcon"
-import GLib from "gi://GLib"
 
 const keyboardLayoutCmd = `
   hyprctl devices | 

@@ -167,8 +167,82 @@ window.Launcher {
     border-radius: 16px;
 
     entry {
-
+      border-style: solid;
+      border-width: 2px;
+      border-color: $lavender-color;
     }
+
+    .tabs {
+      .tab {
+        border-style: solid;
+        border-width: 1px;
+        border-color: transparent;
+
+        border-radius: 8px;
+
+        padding: 4px 10px;
+
+        background-color: transparent;
+      }
+
+      .tab.active {
+        background-color: $surface-color-0;
+
+        border-color: $lavender-color;
+
+        label {
+          color: $lavender-color;
+        }
+      }
+
+      .mode {
+        margin-left: 0;
+
+        color: $lavender-color;
+      }
+    }
+
+    .launcher-row {
+      border-style: solid;
+      border-width: 1px;
+      border-color: transparent;
+
+      border-radius: 8px;
+
+      padding: 0;
+
+      background-color: transparent;
+    }
+
+    .launcher-row.selected {
+      background-color: $surface-color-0;
+
+      border-color: $lavender-color;
+    }
+
+    .launcher-item {
+      border-radius: 8px;
+
+      padding: 6px 8px;
+
+      background-color: transparent;
+    }
+
+    .mode {
+      color: $lavender-color;
+    }
+  }
+
+  :first-child {
+    margin-top: 0;
+  }
+
+  :nth-child(n) {
+    margin-top: 8px;
+  }
+
+  :last-child {
+    margin-bottom: 0;
   }
 }
 
