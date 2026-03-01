@@ -162,7 +162,8 @@ window.Launcher {
   .dialog {
     background-color: $base-color;
 
-    padding: 18px;
+    padding: 8px 16px;
+    min-height: 310px;
 
     border-radius: 16px;
 
@@ -170,9 +171,13 @@ window.Launcher {
       border-style: solid;
       border-width: 2px;
       border-color: $lavender-color;
+
+      margin-bottom: 8px;
     }
 
     .tabs {
+      margin-bottom: 8px;
+
       .tab {
         border-style: solid;
         border-width: 1px;
@@ -194,12 +199,6 @@ window.Launcher {
           color: $lavender-color;
         }
       }
-
-      .mode {
-        margin-left: 0;
-
-        color: $lavender-color;
-      }
     }
 
     .launcher-row {
@@ -209,40 +208,22 @@ window.Launcher {
 
       border-radius: 8px;
 
-      padding: 0;
-
       background-color: transparent;
     }
 
     .launcher-row.selected {
-      background-color: $surface-color-0;
-
       border-color: $lavender-color;
     }
 
     .launcher-item {
       border-radius: 8px;
 
-      padding: 6px 8px;
-
       background-color: transparent;
+
+      image {
+        margin-right: 8px;
+      }
     }
-
-    .mode {
-      color: $lavender-color;
-    }
-  }
-
-  :first-child {
-    margin-top: 0;
-  }
-
-  :nth-child(n) {
-    margin-top: 8px;
-  }
-
-  :last-child {
-    margin-bottom: 0;
   }
 }
 
