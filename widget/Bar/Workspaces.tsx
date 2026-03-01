@@ -16,13 +16,19 @@ export default function Workspaces(props: Partial<Gtk.Box.ConstructorProps> = {}
     sortedWorkspaces.sort((a, b) => a.get_id() - b.get_id())
 
     const nextButtons = sortedWorkspaces.map(workspace => {
-      const id = workspace.get_id()
-      const idStr = id.toString()
+      const id = workspace.get_id();
+      let name = workspace.get_name();
+
+      if (name == "10") { 
+        name = "0"
+      } else if (name == "special:magic") {
+        name = "S"
+      }
 
       return (
         <button
           class={id == focusedWorkspaceId() ? "focused" : ""}
-          label={idStr == "10" ? "0" : idStr}
+          label={name}
           onClicked={() => id != focusedWorkspaceId() && workspace.focus()}
         />
       )

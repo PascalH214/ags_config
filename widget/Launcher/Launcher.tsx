@@ -283,7 +283,7 @@ export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor
 
   const [entryText, setEntryText] = createState("");
   const [activeTab, setActiveTab] = createState<LauncherTab>("apps");
-  const [mode, setMode] = createState<LauncherMode>("normal");
+  const [mode, setMode] = createState<LauncherMode>("insert");
   const [selectedIndex, setSelectedIndex] = createState(0);
   const [apps, setApps] = createState<LauncherApp[]>([]);
   const [bookmarks, setBookmarks] = createState<LauncherBookmark[]>([]);
@@ -295,7 +295,7 @@ export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor
     setEntryText("");
     entry?.set_text("");
     setActiveTab("apps");
-    setMode("normal");
+    setMode("insert");
     pendingGSequence = false;
     setSelectedIndex(0);
     setApps([]);
