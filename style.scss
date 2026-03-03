@@ -19,6 +19,30 @@ $lavender-color: rgb(180, 190, 254);
 $button-width: 48px;
 $button-height: 16px;
 
+@mixin border($width, $color) {
+  border-style: solid;
+  border-width: $width;
+  border-color: $color;
+}
+
+@mixin bar-panel {
+  background-color: $base-color;
+
+  padding: 6px 12px;
+  border-radius: 8px;
+
+  font-size: larger;
+  color: $text-color;
+
+  @include border(0.4px, $overlay-color-0);
+}
+
+@mixin transparent-bounded($radius: 8px) {
+  @include border(1px, transparent);
+  border-radius: $radius;
+  background-color: transparent;
+}
+
 * {
   font-family: monospace;
 }
@@ -29,17 +53,7 @@ window.Bar {
   padding: 8px 16px 0px 16px;
 
   .hw-info, .workspaces, .info-center {
-    background-color: $base-color;
-
-    padding: 6px 12px;
-    border-radius: 8px;
-
-    font-size: larger;
-    color: $text-color;
-
-    border-style: solid;
-    border-width: 0.4px;
-    border-color: $overlay-color-0;
+    @include bar-panel;
   }
 
   .workspaces {
@@ -169,7 +183,7 @@ window.Launcher {
 
     entry {
       border-style: solid;
-      border-width: 2px;
+      border-width: 1px;
       border-color: $lavender-color;
 
       margin-bottom: 8px;
@@ -179,20 +193,12 @@ window.Launcher {
       margin-bottom: 8px;
 
       .tab {
-        border-style: solid;
-        border-width: 1px;
-        border-color: transparent;
-
-        border-radius: 8px;
+        @include transparent-bounded;
 
         padding: 4px 10px;
-
-        background-color: transparent;
       }
 
       .tab.active {
-        background-color: $surface-color-0;
-
         border-color: $lavender-color;
 
         label {
@@ -202,13 +208,7 @@ window.Launcher {
     }
 
     .launcher-row {
-      border-style: solid;
-      border-width: 1px;
-      border-color: transparent;
-
-      border-radius: 8px;
-
-      background-color: transparent;
+      @include transparent-bounded;
     }
 
     .launcher-row.selected {

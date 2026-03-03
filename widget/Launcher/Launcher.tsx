@@ -143,12 +143,6 @@ export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor
 
   createEffect(() => {
     if (activeTab() === "apps") {
-      if (entryText().length < 3) {
-        setApps([]);
-        setBookmarks([]);
-        return;
-      }
-
       setApps(getApplications(entryText()));
       setBookmarks([]);
       return;
