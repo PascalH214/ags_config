@@ -161,7 +161,7 @@ export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor
     setOpen={setLauncherOpen}
   >
     <box
-      class="dialog"
+      class="launcher-dialog"
       halign={Gtk.Align.CENTER}
       valign={Gtk.Align.CENTER}
       orientation={Gtk.Orientation.VERTICAL}
@@ -182,6 +182,7 @@ export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor
         </button>
       </box>
       <Gtk.Entry
+        class="launcher-entry"
         $={setupInputField}
         widthRequest={400}
       />

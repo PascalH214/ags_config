@@ -1,6 +1,7 @@
 // https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
 
 $base-color: rgb(30, 30, 46);
+$mantle-color: rgb(24, 24, 37);
 
 $text-color: rgb(205, 214, 244);
 
@@ -138,7 +139,7 @@ window.Bar {
   }
 }
 
-window.PowerMenu, window.Launcher {
+window.PowerMenu {
   background-color: rgba(0, 0, 0, 0.8);
 
   color: $text-color;
@@ -173,25 +174,34 @@ window.PowerMenu {
 }
 
 window.Launcher {
-  .dialog {
+  .launcher-dialog {
     background-color: $base-color;
 
-    padding: 8px 16px;
-    min-height: 310px;
+    padding: 16px;
+    min-height: 300px;
 
     border-radius: 16px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: $lavender-color;
 
-    entry {
-      border-style: solid;
-      border-width: 1px;
-      border-color: $lavender-color;
+    .launcher-entry {
+      margin-bottom: 16px;
 
-      margin-bottom: 8px;
+      background-color: $mantle-color;
+      color: $text-color;
+      background-image: none;
+
+      border: none;
+      outline: none;
+      box-shadow: none;
+
+      text {
+        color: $text-color;
+      }
     }
 
     .tabs {
-      margin-bottom: 8px;
-
       .tab {
         @include transparent-bounded;
 
@@ -199,10 +209,10 @@ window.Launcher {
       }
 
       .tab.active {
-        border-color: $lavender-color;
-
         label {
           color: $lavender-color;
+
+          text-decoration: underline
         }
       }
     }
@@ -212,7 +222,7 @@ window.Launcher {
     }
 
     .launcher-row.selected {
-      border-color: $lavender-color;
+      background-color: $surface-color-0;
     }
 
     .launcher-item {
@@ -229,11 +239,6 @@ window.Launcher {
 
 window.NotificationContainer {
   margin: 8px 16px;
-
-  // border-style: solid;
-  // border-width: 2px;
-  // border-color: $lavender-color;
-  // border-radius: 32px;
 
   .notification {
     background-color: $base-color;
