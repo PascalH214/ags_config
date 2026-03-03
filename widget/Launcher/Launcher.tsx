@@ -185,6 +185,7 @@ export default function Launcher(gdkmonitor: Gdk.Monitor, launcherOpen: Accessor
         class="launcher-entry"
         $={setupInputField}
         widthRequest={400}
+        placeholderText={"Search"}
       />
       <box
         orientation={Gtk.Orientation.VERTICAL}
