@@ -48,6 +48,23 @@ $button-height: 16px;
   font-family: monospace;
 }
 
+window.PowerMenu, window.Launcher {
+  background-color: rgba(0, 0, 0, 0.4);
+
+  color: $text-color;
+}
+
+.launcher-dialog, .powermenu-dialog {
+  background-color: $base-color;
+
+  padding: 16px;
+
+  border-radius: 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: $lavender-color;
+}
+
 window.Bar {
   background: transparent;
 
@@ -140,12 +157,6 @@ window.Bar {
 }
 
 window.PowerMenu {
-  background-color: rgba(0, 0, 0, 0.8);
-
-  color: $text-color;
-}
-
-window.PowerMenu {
   .power-menu-button {
     margin: 0px 8px;
 
@@ -160,7 +171,7 @@ window.PowerMenu {
     image {
       border-radius: 16px;
 
-      background-color: $surface-color-0;
+      background-color: $mantle-color;
     }
 
     &.focus image {
@@ -175,15 +186,7 @@ window.PowerMenu {
 
 window.Launcher {
   .launcher-dialog {
-    background-color: $base-color;
-
-    padding: 16px;
     min-height: 300px;
-
-    border-radius: 16px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: $lavender-color;
 
     .launcher-entry {
       margin-bottom: 16px;

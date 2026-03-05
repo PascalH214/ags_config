@@ -34,7 +34,11 @@ async function runCommand(command: string): Promise<void> {
   )
 }
 
-export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Accessor<boolean>, setPowerMenuOpen: Setter<boolean>) {
+export default function PowerMenu(
+  gdkmonitor: Gdk.Monitor,
+  powerMenuOpen: Accessor<boolean>,
+  setPowerMenuOpen: Setter<boolean>
+) {
   const [focusIndex, setFocusIndex] = createState(0);
 
   const setupWindow = (ref: Astal.Window) => {
@@ -91,7 +95,7 @@ export default function PowerMenu(gdkmonitor: Gdk.Monitor, powerMenuOpen: Access
     setOpen={setPowerMenuOpen}
   >
     <box
-      class="dialog"
+      class="powermenu-dialog"
       halign={Gtk.Align.CENTER}
       valign={Gtk.Align.CENTER}
       $type="center"
